@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Modern Weather Dashboard - Real-time weather data and forecasts">
+    <title>Weather Dashboard | Real-time Weather</title>
+    <link rel="stylesheet" href="weather-styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <span class="logo-icon">🌦️</span>
+                    <h1>Weather Dashboard</h1>
+                </div>
+                <div class="search-box">
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        placeholder="Search city..." 
+                        autocomplete="off"
+                    >
+                    <button id="searchBtn" class="search-btn">
+                        <span>🔍</span>
+                    </button>
+                </div>
+                <div class="header-actions">
+                    <button id="locationBtn" class="btn-icon" title="Use my location">
+                        📍
+                    </button>
+                    <button id="themeToggle" class="btn-icon" title="Toggle theme">
+                        🌙
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Loading State -->
+            <div id="loadingState" class="loading-state hidden">
+                <div class="spinner"></div>
+                <p>Loading weather data...</p>
+            </div>
+
+            <!-- Error State -->
+            <div id="errorState" class="error-state hidden">
+                <p id="errorMessage"></p>
+                <button class="btn-primary" onclick="resetError()">Try Again</button>
+            </div>
+
+            <!-- Main Weather Section -->
+            <section id="mainWeatherSection" class="main-weather-section hidden">
+                <!-- Current Weather Card -->
+                <div class="current-weather-card">
+                    <div class="city-info">
+                        <h2 id="cityName">-</h2>
+                        <p id="cityCountry">-</p>
+                        <p id="currentDate">-</p>
+                    </div>
+
+                    <div class="weather-display">
+                        <div class="weather-icon-large">
+                            <img id="weatherIcon" src="" alt="Weather icon" class="weather-img-large">
+                        </div>
+                        <div class="temp-display">
+                            <span id="temperature" class="temp-value">-</span>
+                            <span class="temp-unit">°C</span>
+                        </div>
+                    </div>
+
+                    <div class="weather-description">
+                        <p id="weatherDescription">-</p>
+                        <p id="feelsLike">Feels like: -</p>
+                    </div>
+
+                    <div class="weather-details-grid">
+                        <div class="detail-item">
+                            <span class="detail-icon">💧</span>
+                            <span class="detail-label">Humidity</span>
+                            <span class="detail-value" id="humidity">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">💨</span>
+                            <span class="detail-label">Wind Speed</span>
+                            <span class="detail-value" id="windSpeed">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">🔽</span>
+                            <span class="detail-label">Pressure</span>
+                            <span class="detail-value" id="pressure">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">👁️</span>
+                            <span class="detail-label">Visibility</span>
+                            <span class="detail-value" id="visibility">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">↗️</span>
+                            <span class="detail-label">Wind Direction</span>
+                            <span class="detail-value" id="windDirection">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">☀️</span>
+                            <span class="detail-label">UV Index</span>
+                            <span class="detail-value" id="uvIndex">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Forecast Section -->
+                <section class="forecast-section">
+                    <h3>Hourly Forecast</h3>
+                    <div class="hourly-forecast" id="hourlyForecast">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </section>
+
+                <!-- 5-Day Forecast -->
+                <section class="forecast-section">
+                    <h3>5-Day Forecast</h3>
+                    <div class="daily-forecast" id="dailyForecast">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </section>
+
+                <!-- Air Quality -->
+                <section class="air-quality-section">
+                    <h3>Air Quality</h3>
+                    <div class="air-quality-card">
+                        <div class="aqi-display">
+                            <div class="aqi-circle">
+                                <span id="aqiValue" class="aqi-value">-</span>
+                            </div>
+                            <div class="aqi-info">
+                                <p id="aqiStatus" class="aqi-status">-</p>
+                                <p id="aqiDescription" class="aqi-description">-</p>
+                            </div>
+                        </div>
+                        <div class="pollutants-grid">
+                            <div class="pollutant-item">
+                                <span class="pollutant-name">PM2.5</span>
+                                <span class="pollutant-value" id="pm25">-</span>
+                            </div>
+                            <div class="pollutant-item">
+                                <span class="pollutant-name">PM10</span>
+                                <span class="pollutant-value" id="pm10">-</span>
+                            </div>
+                            <div class="pollutant-item">
+                                <span class="pollutant-name">O3</span>
+                                <span class="pollutant-value" id="o3">-</span>
+                            </div>
+                            <div class="pollutant-item">
+                                <span class="pollutant-name">NO2</span>
+                                <span class="pollutant-value" id="no2">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Saved Cities -->
+                <section class="saved-cities-section">
+                    <h3>Saved Cities</h3>
+                    <div class="saved-cities" id="savedCities">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </section>
+            </section>
+
+            <!-- Welcome State -->
+            <section id="welcomeState" class="welcome-state">
+                <div class="welcome-content">
+                    <div class="welcome-icon">🌍</div>
+                    <h2>Welcome to Weather Dashboard</h2>
+                    <p>Get real-time weather information for any location</p>
+                    <div class="welcome-actions">
+                        <button class="btn-primary" onclick="useLocation()">
+                            📍 Use My Location
+                        </button>
+                        <p class="or-text">or</p>
+                        <input 
+                            type="text" 
+                            id="welcomeSearchInput" 
+                            class="welcome-search" 
+                            placeholder="Enter a city name..."
+                            autocomplete="off"
+                        >
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>Weather data provided by <a href="https://openweathermap.org/" target="_blank">OpenWeatherMap</a></p>
+            <p>© 2026 Weather Dashboard. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="weather-api.js"></script>
+    <script src="weather-app.js"></script>
+</body>
+</html>
